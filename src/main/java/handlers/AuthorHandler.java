@@ -23,7 +23,7 @@ public class AuthorHandler {
         }
     }
 
-   public static void handleAuthorGroup(Element element, Country country) {
+   public static String handleAuthorGroup(Element element, Country country) {
 
        NodeList nodeList = element.getChildNodes();
 
@@ -45,6 +45,6 @@ public class AuthorHandler {
                }
            }
        }
-       country.setAuthor(authorBuilder.toString());
+       return authorBuilder.toString();
     }
 }

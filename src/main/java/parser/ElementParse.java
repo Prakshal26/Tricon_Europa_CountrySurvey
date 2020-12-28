@@ -2,6 +2,8 @@ package parser;
 
 import database.PostgreConnect;
 import handlers.AuthorHandler;
+import handlers.ChronListHandler;
+import handlers.GeneralSection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -15,7 +17,7 @@ import java.util.Set;
 
 public class ElementParse {
 
-    static void match(Element element, Country country) {
+    static void match(Element element, Country country, StringBuilder generalSectionBuilder) {
 
         String tagName = element.getTagName();
         switch (tagName) {
@@ -23,14 +25,21 @@ public class ElementParse {
             case "HEADING":
                 country.setHeading(element.getTextContent());
                 break;
+                //some files even have P under root element. Check AD.HI
             case "SUB-HEAD":
+                country.setSubheading(element.getTextContent());
+                break;
+            case "P":
                 break;
             case "AUTHOR-GROUP":
-                AuthorHandler.handleAuthorGroup(element, country);
+                country.setAuthor(AuthorHandler.handleAuthorGroup(element, country));
                 break;
             case "GEN-SECTION":
+                GeneralSection.handleGeneralSection(element, generalSectionBuilder);
+                generalSectionBuilder.append("<br>");
                 break;
             case "CHRON-LIST":
+                country.setChronData(ChronListHandler.chronListHandler(element));
                 break;
             default:
                 break;
@@ -47,6 +56,8 @@ public class ElementParse {
 
         Element entryElement = (Element) entryNode;
 
+        StringBuilder generalSectionBuilder = new StringBuilder();
+
         if (entryElement.hasAttribute("ISO")) {
             country.setIso(entryElement.getAttribute("ISO"));
         }
@@ -58,9 +69,10 @@ public class ElementParse {
             Node nNode = nodeList.item(i);
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element)nNode;
-                ElementParse.match(element, country);
+                ElementParse.match(element, country, generalSectionBuilder);
             }
         }
+        country.setGeneralData(generalSectionBuilder.toString());
         PostgreConnect.insertCountry(country);
     }
 }

@@ -5,7 +5,7 @@ public class Country {
   String xmlId;
   String  iso;
   String heading;
-  String subhead;
+  String subheading;
   String author;
   String generalData;
   String chronData;
@@ -34,12 +34,12 @@ public class Country {
         this.heading = heading;
     }
 
-    public String getSubhead() {
-        return subhead;
+    public String getSubheading() {
+        return subheading;
     }
 
-    public void setSubhead(String subhead) {
-        this.subhead = subhead;
+    public void setSubheading(String subheading) {
+        this.subheading = subheading;
     }
 
     public String getAuthor() {
