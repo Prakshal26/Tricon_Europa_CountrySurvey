@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class ElementParse {
 
-    static void match(Element element, Country country, StringBuilder generalSectionBuilder) {
+    static void match(Element element, Country country, StringBuilder generalSectionBuilder, StringBuilder introductionBuilder) {
 
         String tagName = element.getTagName();
         switch (tagName) {
@@ -30,6 +30,9 @@ public class ElementParse {
                 country.setSubheading(element.getTextContent());
                 break;
             case "P":
+                introductionBuilder.append("<p>");
+                GeneralSection.handleParagraph(element.getChildNodes(),introductionBuilder);
+                introductionBuilder.append("</p>");
                 break;
             case "AUTHOR-GROUP":
                 country.setAuthor(AuthorHandler.handleAuthorGroup(element, country));
@@ -57,6 +60,7 @@ public class ElementParse {
         Element entryElement = (Element) entryNode;
 
         StringBuilder generalSectionBuilder = new StringBuilder();
+        StringBuilder introductionBuilder = new StringBuilder();
 
         if (entryElement.hasAttribute("ISO")) {
             country.setIso(entryElement.getAttribute("ISO"));
@@ -69,10 +73,16 @@ public class ElementParse {
             Node nNode = nodeList.item(i);
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element)nNode;
-                ElementParse.match(element, country, generalSectionBuilder);
+                ElementParse.match(element, country, generalSectionBuilder, introductionBuilder);
             }
         }
-        country.setGeneralData(generalSectionBuilder.toString());
+        if (!introductionBuilder.toString().isEmpty()) {
+            country.setIntroduction(introductionBuilder.toString());
+        }
+        if (!generalSectionBuilder.toString().isEmpty()) {
+            country.setGeneralData(generalSectionBuilder.toString());
+        }
+
         PostgreConnect.insertCountry(country);
     }
 }

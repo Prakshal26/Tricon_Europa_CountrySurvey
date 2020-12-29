@@ -5,6 +5,7 @@ public class Country {
   String xmlId;
   String  iso;
   String heading;
+  String introduction;
   String subheading;
   String author;
   String generalData;
@@ -32,6 +33,14 @@ public class Country {
 
     public void setHeading(String heading) {
         this.heading = heading;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public String getSubheading() {

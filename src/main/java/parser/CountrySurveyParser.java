@@ -17,7 +17,7 @@ public class CountrySurveyParser {
             PostgreConnect.connect();
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            File dir = new File("C:\\Users\\lenovo\\IdeaProjects\\EuropaDbWork\\XML_Files\\TEST");
+            File dir = new File("C:\\Users\\lenovo\\IdeaProjects\\EuropaDbWork\\XML_Files\\COUNTRY-SURVEY");
 
             File [] files = dir.listFiles();
             int inserted_id = 0;

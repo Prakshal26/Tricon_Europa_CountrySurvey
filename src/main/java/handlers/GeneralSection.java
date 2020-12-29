@@ -9,7 +9,33 @@ import java.util.Set;
 
 public class GeneralSection {
 
-    static void handleParagraph(NodeList nodeList, StringBuilder stringBuilder) {
+    static void handleGeneralList(NodeList nodeList, StringBuilder stringBuilder) {
+
+        for (int i=0;i<nodeList.getLength();i++) {
+            Node node = nodeList.item(i);
+            if (node.getNodeType() == Node.TEXT_NODE) {
+                stringBuilder.append(node.getNodeValue().trim());
+            }
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element subElement = (Element) node;
+                if (subElement.getTagName().equalsIgnoreCase("ITEM")) {
+                    stringBuilder.append(subElement.getTextContent());
+                    stringBuilder.append("<br>");
+                }
+                if (subElement.getTagName().equalsIgnoreCase("I")) {
+                    stringBuilder.append("<i> ");
+                    stringBuilder.append(subElement.getTextContent());
+                    stringBuilder.append("</i>");
+                }
+                if (subElement.hasChildNodes() && subElement.getTagName()!="I" &&
+                        subElement.getTagName()!="ITEM") {
+                    handleGeneralList(subElement.getChildNodes(),stringBuilder);
+                }
+            }
+        }
+    }
+
+   public static void handleParagraph(NodeList nodeList, StringBuilder stringBuilder) {
 
         for (int i=0;i<nodeList.getLength();i++) {
             Node node = nodeList.item(i);
@@ -67,7 +93,7 @@ public class GeneralSection {
             case "HEADING":
                 stringBuilder.append("<p><b>");
                 stringBuilder.append(element.getTextContent());
-                stringBuilder.append("</p></b>");
+                stringBuilder.append("</b></p>");
                 break;
             case "P":
             case "BLOCKQUOTE":
@@ -76,10 +102,20 @@ public class GeneralSection {
                 stringBuilder.append("</p>");
                 break;
             case "GEN-LIST":
+                stringBuilder.append("<p>");
+                handleGeneralList(element.getChildNodes(),stringBuilder);
+                stringBuilder.append("</p>");
                 break;
             case "FIGURE-GROUP":
                 break;
             case "TABLE-BLOCK":
+                stringBuilder.append("<p>");
+                TableHandler.handleTGroup(element.getChildNodes(), stringBuilder);
+                stringBuilder.append("</p>");
+                break;
+            case "GEN-SECTION":
+                //Gen-Section also has Gen-Section tag inside it.
+                handleGeneralSection(element,stringBuilder);
                 break;
             default:
                 break;
