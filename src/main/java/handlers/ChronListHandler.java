@@ -26,14 +26,20 @@ public class ChronListHandler {
                     stringBuilder.append("</b>");
                 }
                 if (subElement.getTagName().equalsIgnoreCase("XR")) {
-                    stringBuilder.append("<a href");
-                    stringBuilder.append(subElement.getNodeValue());
-                    stringBuilder.append("</a>");
+                    if (subElement.hasAttribute("REF")) {
+                        stringBuilder.append(" ");
+                        stringBuilder.append("<a href =\"https://www.europaworld.com/entry/");
+                        stringBuilder.append(subElement.getAttribute("REF"));
+                        stringBuilder.append("\">");
+                        stringBuilder.append(subElement.getTextContent());
+                        stringBuilder.append("</a>");
+                    }
                 }
                 if (subElement.getTagName().equalsIgnoreCase("SC")) {
-                    //SOMETHING
+                    stringBuilder.append("<span style=\"font-variant:small-caps; font-weight:bold\">");
                     stringBuilder.append(" ");
                     stringBuilder.append(subElement.getTextContent());
+                    stringBuilder.append("</span>");
                 }
                 if (subElement.getTagName().equalsIgnoreCase("PERSON-NAME")) {
                     stringBuilder.append("<b> ");
