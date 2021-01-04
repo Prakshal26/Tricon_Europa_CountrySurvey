@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class ElementParse {
 
-    static void match(Element element, Country country, StringBuilder generalSectionBuilder, StringBuilder introductionBuilder) {
+    static void match(Element element, Country country, StringBuilder generalSectionBuilder, StringBuilder introductionBuilder, StringBuilder chronListBuilder) {
 
         String tagName = element.getTagName();
         switch (tagName) {
@@ -25,7 +25,6 @@ public class ElementParse {
             case "HEADING":
                 country.setHeading(element.getTextContent());
                 break;
-                //some files even have P under root element. Check AD.HI
             case "SUB-HEAD":
                 country.setSubheading(element.getTextContent());
                 break;
@@ -42,7 +41,8 @@ public class ElementParse {
                 generalSectionBuilder.append("<br>");
                 break;
             case "CHRON-LIST":
-                country.setChronData(ChronListHandler.chronListHandler(element));
+                ChronListHandler.chronListHandler(element, chronListBuilder);
+                chronListBuilder.append("<br>");
                 break;
             default:
                 break;
@@ -61,6 +61,7 @@ public class ElementParse {
 
         StringBuilder generalSectionBuilder = new StringBuilder();
         StringBuilder introductionBuilder = new StringBuilder();
+        StringBuilder chronListBuilder = new StringBuilder();
 
         if (entryElement.hasAttribute("ISO")) {
             country.setIso(entryElement.getAttribute("ISO"));
@@ -73,7 +74,7 @@ public class ElementParse {
             Node nNode = nodeList.item(i);
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element)nNode;
-                ElementParse.match(element, country, generalSectionBuilder, introductionBuilder);
+                ElementParse.match(element, country, generalSectionBuilder, introductionBuilder, chronListBuilder);
             }
         }
         if (!introductionBuilder.toString().isEmpty()) {
@@ -81,6 +82,9 @@ public class ElementParse {
         }
         if (!generalSectionBuilder.toString().isEmpty()) {
             country.setGeneralData(generalSectionBuilder.toString());
+        }
+        if (!chronListBuilder.toString().isEmpty()) {
+            country.setChronData(chronListBuilder.toString());
         }
 
         PostgreConnect.insertCountry(country);

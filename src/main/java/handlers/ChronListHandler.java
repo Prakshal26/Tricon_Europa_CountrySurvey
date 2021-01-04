@@ -69,16 +69,14 @@ public class ChronListHandler {
                 break;
             case "CHRON-TEXT":
                 handleChronData(element.getChildNodes(),stringBuilder);
-                stringBuilder.append("</p>");
                 break;
             default:
                 break;
         }
 
     }
-    public static String chronListHandler(Element element) {
+    public static void chronListHandler(Element element, StringBuilder chronListBuilder) {
 
-       StringBuilder chronBuilder = new StringBuilder();
        NodeList nodeList = element.getElementsByTagName("CHRON-ENTRY");
        for (int i=0; i<nodeList.getLength(); i++) {
            Node node = nodeList.item(i);
@@ -86,13 +84,12 @@ public class ChronListHandler {
            for (int j=0; j< subNodeList.getLength();j++) {
                Node subNode = subNodeList.item(j);
                if (subNode.getNodeType()==Node.ELEMENT_NODE) {
-                   chronBuilder.append("<p>");
+                   chronListBuilder.append("<p>");
                    Element subElement = (Element) subNode;
-                   handleSubElements(subElement,chronBuilder);
-                   chronBuilder.append("</p>");
+                   handleSubElements(subElement,chronListBuilder);
+                   chronListBuilder.append("</p>");
                }
            }
        }
-       return chronBuilder.toString();
     }
 }
